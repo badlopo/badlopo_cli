@@ -1,0 +1,16 @@
+[package]
+name = "badlopo_cli"
+version = "0.1.0"
+edition = "2021"
+authors = ["lopo<lopo@zju.edu.cn>"]
+description = "my cli tool"
+
+[[bin]]
+# overwrite the default bin name
+name = "badlopo"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5.21", features = ["derive"] }
+
+rocket = "0.5.1"
