@@ -20,7 +20,7 @@ struct BadLopoCli {
 
 #[derive(Subcommand, Debug)]
 pub enum BadLopoCommands {
-    #[command(about = "Show detailed information about the project")]
+    #[command(about = "Show detailed information about the project.")]
     About,
 }
 
