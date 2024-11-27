@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 authors = ["lopo<lopo@zju.edu.cn>"]
 description = "my cli tool"
+license = "MIT"
+repository = "https://github.com/badlopo/badlopo_cli"
 
 [[bin]]
 # overwrite the default bin name
