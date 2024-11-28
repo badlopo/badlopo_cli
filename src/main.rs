@@ -1,7 +1,7 @@
 mod serve;
 
 use crate::serve::{ServeImpl, ServeMode};
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
 const ABOUT_CLI: &str = r##"===== ===== ===== ===== ===== ===== ===== =====
@@ -49,7 +49,7 @@ pub enum BadLopoCommands {
             short,
             long,
             help = "Specify the server mode.",
-            default_value = "single",
+            default_value = "mixed",
             ignore_case = true
         )]
         mode: ServeMode,
