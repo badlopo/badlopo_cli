@@ -1,5 +1,7 @@
+mod image;
 mod serve;
 
+use crate::image::ImageFormat;
 use crate::serve::{ServeImpl, ServeMode};
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
@@ -26,6 +28,25 @@ struct BadLopoCli {
 pub enum BadLopoCommands {
     #[command(about = "Show detailed information about the project.")]
     About,
+
+    #[command(about = "Image-related processing. (metadata, resizing, format conversion, etc.)")]
+    Image {
+        #[arg(help = "Path to the source image.")]
+        source: PathBuf,
+        #[arg(
+            short,
+            long,
+            help = "Target image format.\n- No format conversion will be performed if omitted."
+        )]
+        format: Option<ImageFormat>,
+        #[arg(
+            short,
+            long,
+            help = "Target image size.\n- This should be in the format of '<width>x<height>'.\n- If one of the width and height is omitted (\"<width>x\" or \"x<height>\"), the other will be scaled proportionally.\n- No resizing will be performed if omitted."
+        )]
+        // OPTIMIZE: more specific type for 'size'
+        size: Option<String>,
+    },
 
     #[command(about = "Establish a local server to serve static resources.")]
     Serve {
@@ -67,6 +88,7 @@ fn main() {
                 port,
                 mode,
             } => ServeImpl::handle(root, entry, port, mode),
+            _ => {}
         },
         Err(err) => println!("{err}"),
     }
