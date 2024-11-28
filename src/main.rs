@@ -66,23 +66,8 @@ fn main() {
                 entry,
                 port,
                 mode,
-            } => {
-                ServeImpl::handle(root, entry, port, mode);
-            }
+            } => ServeImpl::handle(root, entry, port, mode),
         },
         Err(err) => println!("{err}"),
-    }
-}
-
-#[cfg(test)]
-mod unit_test {
-    use std::path::PathBuf;
-
-    #[test]
-    fn test() {
-        let root = PathBuf::from("./target");
-        let file = root.join("./index.html").canonicalize();
-
-        println!("{:?} | {:?}", root, file);
     }
 }
