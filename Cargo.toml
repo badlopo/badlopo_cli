@@ -16,3 +16,4 @@ path = "src/main.rs"
 clap = { version = "4.5.21", features = ["derive"] }
 
 rocket = "0.5.1"
+image = "0.25.5"
