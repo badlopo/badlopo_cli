@@ -1,7 +1,7 @@
 mod image;
 mod serve;
 
-use crate::image::ImageFormat;
+use crate::image::{ImageFormat, ImageSize};
 use crate::serve::{ServeImpl, ServeMode};
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
@@ -44,8 +44,7 @@ pub enum BadLopoCommands {
             long,
             help = "Target image size.\n- This should be in the format of '<width>x<height>'.\n- If one of the width and height is omitted (\"<width>x\" or \"x<height>\"), the other will be scaled proportionally.\n- No resizing will be performed if omitted."
         )]
-        // OPTIMIZE: more specific type for 'size'
-        size: Option<String>,
+        size: ImageSize,
     },
 
     #[command(about = "Establish a local server to serve static resources.")]
@@ -91,5 +90,35 @@ fn main() {
             _ => {}
         },
         Err(err) => println!("{err}"),
+    }
+}
+
+#[cfg(test)]
+mod misc_test {
+    #[test]
+    fn t() {
+        let s = "100x";
+
+        if let [w, h] = s.split("x").collect::<Vec<&str>>()[..] {
+            let w = w.parse::<u32>();
+            let h = h.parse::<u32>();
+
+            match (w, h) {
+                (Ok(w), Ok(h)) => {
+                    println!("Both {:?} {:?}", w, h);
+                }
+                (Ok(w), Err(_)) => {
+                    println!("Width {:?}", w);
+                }
+                (Err(_), Ok(h)) => {
+                    println!("Height {:?}", h);
+                }
+                (Err(_), Err(_)) => {
+                    println!("None");
+                }
+            }
+        } else {
+            println!("None");
+        }
     }
 }
