@@ -9,8 +9,11 @@ use std::path::PathBuf;
 
 #[derive(ValueEnum, Clone, Debug)]
 pub enum ServeMode {
+    /// All requests will get the entry file as a response.
     Single,
+    /// Try to find the resource in the corresponding path under the root directory, if the resource exists and is a file type, return the resource, otherwise return the entry file.
     Mixed,
+    /// Try to find the resource in the corresponding path under the root directory, throw 404 if not found or not a file type.
     Direct,
 }
 
