@@ -36,7 +36,8 @@ pub enum BadLopoCommands {
         #[arg(
             short,
             long,
-            help = "Target image format.\n- No format conversion will be performed if omitted."
+            help = "Target image format.\n- No format conversion will be performed if omitted.",
+            ignore_case = true
         )]
         format: Option<ImageFormat>,
         #[arg(
