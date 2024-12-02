@@ -29,14 +29,14 @@ impl ServeImpl {
     pub fn handle(root: PathBuf, entry: PathBuf, port: u16, mode: ServeMode) {
         // validate root
         if !root.is_dir() {
-            println!("Invalid root (root is not a directory)");
+            println!("Invalid root. (not a directory)");
             return;
         }
 
         // validate entry
         let entry = root.clone().join(entry);
         if !entry.is_file() {
-            println!("Invalid entry (entry is not a file)");
+            println!("Invalid entry. (not a file)");
             return;
         }
 
