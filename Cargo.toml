@@ -1,6 +1,6 @@
 [package]
 name = "badlopo_cli"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["lopo<lopo@zju.edu.cn>"]
 description = "my cli tool"
