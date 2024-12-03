@@ -148,13 +148,13 @@ impl ImageWithMeta {
     /// show the metadata of the image in console
     pub fn show_meta(&self) {
         println!(
-            "Format: {:?}\nWidth: {}\nHeight: {}\nColor Type: {:?}\nBit Depth: {}",
+            "===== =====\nFormat: {:?}\nWidth: {}\nHeight: {}\nColor Type: {:?}\nBit Depth: {}",
             self.format, self.width, self.height, self.color_type, self.bit_depth
         );
     }
 }
 
-struct ImageImpl;
+pub struct ImageImpl;
 
 impl ImageImpl {
     /// parse the image buffer and return the dynamic image with its metadata
@@ -184,7 +184,7 @@ impl ImageImpl {
     /// 2. resize the image if the size is specified
     /// 3. convert the image to the target format if specified
     /// 4. write the image to the target path if at least one of the 'size' and 'format' is specified
-    pub fn handle(source: PathBuf, format: Option<ImageFormat>, size: ImageSize) {
+    pub fn handle(source: PathBuf, format: Option<ImageFormat>, size: Option<ImageSize>) {
         if source.is_file() {
             if let Ok(buffer) = read(&source) {
                 match ImageImpl::parse(&buffer) {
@@ -193,7 +193,12 @@ impl ImageImpl {
                         parsed.show_meta();
 
                         // check if the size or format is specified
-                        if format.is_some() || size != ImageSize::None {
+                        if format.is_some() || {
+                            match &size {
+                                Some(v) => v != &ImageSize::None,
+                                None => false,
+                            }
+                        } {
                             let target_format = ImgFormat::from(format.unwrap_or(parsed.format));
 
                             // we assume that the conversion is successful
@@ -201,8 +206,12 @@ impl ImageImpl {
                             let _extension = target_format.extensions_str()[0];
 
                             let mut _path = source.clone();
-                            let img = if let Some((w, h)) = size.to_wh(parsed.width, parsed.height)
-                            {
+                            let img = if let Some((w, h)) = {
+                                match size {
+                                    Some(size) => size.to_wh(parsed.width, parsed.height),
+                                    None => None,
+                                }
+                            } {
                                 // patch 'file_stem' with '@<width>x<height>'
                                 _path = _path.with_file_name(format!("{}@{}x{}", _stem, w, h,));
 
@@ -212,9 +221,11 @@ impl ImageImpl {
                                 // otherwise, use the original image
                                 &parsed.dynamic_image
                             };
+
                             // set 'extension'
                             _path = _path.with_extension(_extension);
 
+                            println!("===== =====");
                             // try to open a file in write-only mode at the target path
                             match File::create(&_path) {
                                 Ok(mut target) => match img.write_to(&mut target, target_format) {
@@ -254,9 +265,9 @@ mod unit_test {
 
         // println!("{:#?}", guess_format(&bytes));
         ImageImpl::handle(
-            PathBuf::from("./__test__/img.png"),
-            Some(ImageFormat::Ico),
-            ImageSize::Width(255),
+            PathBuf::from("./__test__/24.png"),
+            Some(ImageFormat::Tiff),
+            Some(ImageSize::Width(256)),
         );
 
         // let file = PathBuf::from("./__test__/img.png");

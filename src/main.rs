@@ -1,7 +1,7 @@
 mod image;
 mod serve;
 
-use crate::image::{ImageFormat, ImageSize};
+use crate::image::{ImageFormat, ImageImpl, ImageSize};
 use crate::serve::{ServeImpl, ServeMode};
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
@@ -45,7 +45,7 @@ pub enum BadLopoCommands {
             long,
             help = "Target image size.\n- This should be in the format of '<width>x<height>'.\n- If one of the width and height is omitted (\"<width>x\" or \"x<height>\"), the other will be scaled proportionally.\n- No resizing will be performed if omitted."
         )]
-        size: ImageSize,
+        size: Option<ImageSize>,
     },
 
     #[command(about = "Establish a local server to serve static resources.")]
@@ -82,13 +82,18 @@ fn main() {
     match BadLopoCli::try_parse() {
         Ok(BadLopoCli { command }) => match command {
             BadLopoCommands::About => println!("{}", ABOUT_CLI),
+            BadLopoCommands::Image {
+                source,
+                format,
+                size,
+            } => ImageImpl::handle(source, format, size),
             BadLopoCommands::Serve {
                 root,
                 entry,
                 port,
                 mode,
             } => ServeImpl::handle(root, entry, port, mode),
-            _ => {}
+            // _ => {}
         },
         Err(err) => println!("{err}"),
     }
