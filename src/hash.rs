@@ -1,5 +1,4 @@
 use clap::ValueEnum;
-use image::EncodableLayout;
 use std::fs;
 
 #[derive(ValueEnum, Clone, Debug)]
