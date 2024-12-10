@@ -157,11 +157,11 @@ impl ImageWithMeta {
 pub struct ImageImpl;
 
 impl ImageImpl {
-    /// parse the image buffer and return the dynamic image with its metadata
-    fn parse(buffer: &[u8]) -> Result<ImageWithMeta, String> {
-        if let Ok(f) = guess_format(buffer) {
+    /// parse the image bytes and return the dynamic image with its metadata
+    fn parse(bytes: &[u8]) -> Result<ImageWithMeta, String> {
+        if let Ok(f) = guess_format(bytes) {
             if let Ok(format) = ImageFormat::try_from(f) {
-                match load_from_memory_with_format(buffer, f) {
+                match load_from_memory_with_format(bytes, f) {
                     Ok(dynamic_image) => Ok(ImageWithMeta {
                         format,
                         width: dynamic_image.width(),
@@ -186,8 +186,8 @@ impl ImageImpl {
     /// 4. write the image to the target path if at least one of the 'size' and 'format' is specified
     pub fn handle(source: PathBuf, format: Option<ImageFormat>, size: Option<ImageSize>) {
         if source.is_file() {
-            if let Ok(buffer) = read(&source) {
-                match ImageImpl::parse(&buffer) {
+            if let Ok(bytes) = read(&source) {
+                match ImageImpl::parse(&bytes) {
                     Ok(parsed) => {
                         // always show metadata of the image
                         parsed.show_meta();
