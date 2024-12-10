@@ -35,15 +35,15 @@ pub enum BadLopoCommands {
     Hash {
         #[arg(help = "Source text or source file path to be evaluated.")]
         source: String,
+        #[arg(short, long, help = "The hash algorithm to use.", ignore_case = true)]
+        algorithm: HashAlgorithm,
         #[arg(
             short,
             long,
-            help = "Whether to treat source as a raw string rather than a file path.",
+            help = "Whether to treat source as a raw string rather than a file path (default).",
             default_value = "false"
         )]
-        raw: Option<bool>,
-        #[arg(short, long, help = "The hash algorithm to use.", ignore_case = true)]
-        algorithm: HashAlgorithm,
+        raw: bool,
     },
 
     #[command(about = "Image-related processing. (metadata, resizing, format conversion, etc.)")]
