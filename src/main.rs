@@ -1,6 +1,8 @@
+mod hash;
 mod image;
 mod serve;
 
+use crate::hash::{HashAlgorithm, HashImpl};
 use crate::image::{ImageFormat, ImageImpl, ImageSize};
 use crate::serve::{ServeImpl, ServeMode};
 use clap::{Parser, Subcommand};
@@ -28,6 +30,21 @@ struct BadLopoCli {
 pub enum BadLopoCommands {
     #[command(about = "Show detailed information about the project.")]
     About,
+
+    #[command(about = "Calculate the hash value of the specified source.")]
+    Hash {
+        #[arg(help = "Source text or source file path to be evaluated.")]
+        source: String,
+        #[arg(
+            short,
+            long,
+            help = "Whether to treat source as a raw string rather than a file path.",
+            default_value = "false"
+        )]
+        raw: Option<bool>,
+        #[arg(short, long, help = "The hash algorithm to use.", ignore_case = true)]
+        algorithm: HashAlgorithm,
+    },
 
     #[command(about = "Image-related processing. (metadata, resizing, format conversion, etc.)")]
     Image {
@@ -82,6 +99,11 @@ fn main() {
     match BadLopoCli::try_parse() {
         Ok(BadLopoCli { command }) => match command {
             BadLopoCommands::About => println!("{}", ABOUT_CLI),
+            BadLopoCommands::Hash {
+                source,
+                raw,
+                algorithm,
+            } => HashImpl::handle(source, raw, algorithm),
             BadLopoCommands::Image {
                 source,
                 format,
