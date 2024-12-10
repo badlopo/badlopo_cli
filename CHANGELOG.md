@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.0 - 2024.12.11
+
+### Added
+
+- subcommand `hash` - Calculate the hash value of the specified source.
+
 ## 0.3.0 - 2024.12.03
 
 ### Added
