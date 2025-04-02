@@ -1,4 +1,6 @@
+use base64::Engine;
 use clap::ValueEnum;
+use digest::Output;
 use std::fs;
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -11,17 +13,12 @@ pub enum HashAlgorithm {
     Sha512,
 }
 
-fn generic_hasher<Hasher: digest::Digest>(bytes: &[u8]) -> String {
-    let result = Hasher::digest(bytes);
-    let mut hex = String::new();
-    for byte in result {
-        hex += &format!("{:x}", byte);
-    }
-    hex
+fn generic_hasher<Hasher: digest::Digest>(bytes: &[u8]) -> Vec<u8> {
+    Hasher::digest(bytes).to_vec()
 }
 
 impl HashAlgorithm {
-    fn hasher(&self) -> Box<fn(&[u8]) -> String> {
+    fn get_hasher(&self) -> Box<fn(&[u8]) -> Vec<u8>> {
         match self {
             HashAlgorithm::Md5 => Box::new(generic_hasher::<md5::Md5>),
             HashAlgorithm::Sha1 => Box::new(generic_hasher::<sha1::Sha1>),
@@ -48,9 +45,17 @@ impl HashImpl {
             }
         };
 
-        let hasher = algorithm.hasher();
+        let hasher = algorithm.get_hasher();
         let result = hasher(&buffer);
-        println!("{result}");
+
+        let mut hex = String::new();
+        for byte in &result {
+            hex += &format!("{:x}", byte);
+        }
+        let b64 = base64::engine::general_purpose::STANDARD.encode(&result);
+
+        println!("HEX: {hex}");
+        println!("BASE64: {b64}");
     }
 }
 
@@ -59,6 +64,6 @@ mod unit_test {
     use super::*;
     #[test]
     fn t() {
-        HashImpl::handle("hello".to_string(), Some(true), HashAlgorithm::Md5);
+        HashImpl::handle("hello".to_string(), true, HashAlgorithm::Md5);
     }
 }
