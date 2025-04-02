@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.5.0 - 2025.04.02
+
+- subcommand `hash` - Output in `hex` and `base64` format.
+
 ## 0.4.0 - 2024.12.11
 
 ### Added
